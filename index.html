@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Media</title>
+    <style>
+        html, body {
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+            background-size: auto 100%;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+
+        #media {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <img id="media" alt="Responsive Media" />
+    <script>
+        const mp4Portrait = ""; // URL for portrait video/image
+        const mp4Landscape = ""; // URL for landscape video/image
+        let currentOrientation = "";
+
+        // Adjusts media layout based on orientation
+        function adjustMediaLayout() {
+            const media = document.getElementById("media");
+            const isPortrait = window.innerWidth < window.innerHeight;
+            const aspectRatio = isPortrait
+                ? window.innerHeight / window.innerWidth
+                : window.innerWidth / window.innerHeight;
+
+            if (isPortrait) {
+                if (currentOrientation !== "portrait") {
+                    currentOrientation = "portrait";
+                    media.src = mp4Portrait;
+                    console.log("Switched to portrait");
+                }
+                document.body.style.backgroundSize = aspectRatio > 1.77777 ? "133% auto" : "auto 100%";
+            } else {
+                if (currentOrientation !== "landscape") {
+                    currentOrientation = "landscape";
+                    media.src = mp4Landscape;
+                    console.log("Switched to landscape");
+                }
+                document.body.style.backgroundSize = aspectRatio > 1.77777 ? "auto 133%" : "100% auto";
+            }
+        }
+
+        // Fallback: Replace img with video if image fails
+        function handleMediaError() {
+            console.log("Fallback: Replacing image with video");
+            const img = document.getElementById("media");
+            const video = document.createElement("video");
+            video.src = img.src;
+            video.autoplay = true;
+            video.loop = true;
+            video.muted = true;
+            video.playsInline = true;
+            video.style = img.style;
+            video.id = "media";
+            img.parentNode.replaceChild(video, img);
+            video.style.display = "block";
+        }
+
+        // Show media after it loads
+        function showMedia() {
+            const media = document.getElementById("media");
+            media.style.display = "block";
+        }
+
+        // Event listeners
+        window.addEventListener("resize", adjustMediaLayout);
+        document.getElementById("media").addEventListener("error", handleMediaError);
+
+        // Initialize
+        window.addEventListener("load", () => {
+            adjustMediaLayout();
+            showMedia();
+        });
+    </script>
+</body>
+</html>
