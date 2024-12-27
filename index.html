@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Media</title>
+    <title>Responsive Media with Clickthrough</title>
     <style>
         html, body {
             height: 100%;
@@ -21,6 +21,7 @@
             height: 100%;
             object-fit: cover;
             display: none;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -29,6 +30,7 @@
     <script>
         const mp4Portrait = ""; // URL for portrait video/image
         const mp4Landscape = ""; // URL for landscape video/image
+        const clickthroughUrl = ""; // URL to open on click
         let currentOrientation = "";
 
         // Adjusts media layout based on orientation
@@ -68,8 +70,18 @@
             video.playsInline = true;
             video.style = img.style;
             video.id = "media";
+            video.addEventListener("click", () => handleClickthrough());
             img.parentNode.replaceChild(video, img);
             video.style.display = "block";
+        }
+
+        // Open the URL on media click
+        function handleClickthrough() {
+            if (typeof mraid !== "undefined" && typeof mraid.open === "function") {
+                mraid.open(clickthroughUrl);
+            } else {
+                window.open(clickthroughUrl, "_blank");
+            }
         }
 
         // Show media after it loads
@@ -81,6 +93,7 @@
         // Event listeners
         window.addEventListener("resize", adjustMediaLayout);
         document.getElementById("media").addEventListener("error", handleMediaError);
+        document.getElementById("media").addEventListener("click", handleClickthrough);
 
         // Initialize
         window.addEventListener("load", () => {
